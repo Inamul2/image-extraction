@@ -434,7 +434,9 @@ class Fetch_images(Resource):
 
                     for fav in getFavicon(baseUrl):
                         if baseUrl in fav:
-                            links.append({"Favicon": fav})
+                            if "http" in fav and "https" not in fav:
+                                fav = "https://" + fav[:]
+                                links.append({"Favicon": fav})
                         else:
                             links.append({"Favicon": baseUrl + fav})
 

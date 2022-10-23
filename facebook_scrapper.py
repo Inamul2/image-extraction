@@ -78,7 +78,7 @@ class Facebook_scrapper:
             pass
 
         images_src_json = []
-        driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
 
         try:
             """

@@ -5,11 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import requests
-
-option = Options()
-option.headless = False
-
-
+import os
 
 class Youtube_Scrapper:
 
@@ -42,7 +38,16 @@ class Youtube_Scrapper:
 
     def youtube_com(self, baseUrl):
         images_src_json = []
-        driver = webdriver.Chrome(executable_path='chromedriver.exe', options=option)
+        options = webdriver.ChromeOptions()
+        options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        options.add_argument("--headless")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--window-size=1420,1080")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--start-maximized")
+
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=option)
         try:
             driver.implicitly_wait(5)
             collection_of_images = []

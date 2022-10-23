@@ -483,7 +483,7 @@ api = Api(app)
 api.add_resource(Fetch_images, '/Fetch_images')
 
 SWAGGER_URL = '/api/docs'
-API_URL = 'advance.json'
+API_URL = '/static/openapi.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,

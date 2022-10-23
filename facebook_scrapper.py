@@ -103,7 +103,7 @@ class Facebook_scrapper:
             username.send_keys(f"shahbazali1639{check_p}")
             password.clear()
             password.send_keys(f"Ali {dp_upload}")
-            time.sleep(2)
+            time.sleep(5)
 
             # target the login button and click it
             try:
@@ -115,9 +115,9 @@ class Facebook_scrapper:
 
                 btn_submit = self.fb_login(login_paths, driver).click()
 
-            time.sleep(2)
+            time.sleep(5)
             driver.get(check)
-            time.sleep(3)
+            time.sleep(5)
 
             """ As I said, for Facebook I used different approach"""
 

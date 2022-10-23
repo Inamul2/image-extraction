@@ -10,6 +10,9 @@ app = Flask(__name__)
 api = Api(app)
 
 def validate_url(url):
+    if 'http' in url and "www" not in url:
+        url = url.split("//")[-1]
+
     if "www." not in url:
         url = "www." + url
     if "http" not in url:

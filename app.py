@@ -375,18 +375,17 @@ def validate_url(url):
 
 
 def getFavicon1(domain):
-        page = requests.get(domain)
-        soup = BeautifulSoup(page.text, 'html.parser')
-        icon_link = soup.find("link", rel="shortcut icon")
-        if icon_link is None:
-            icon_link = soup.find("link", rel="icon")
-        if icon_link is None:
-            return [domain + '/favicon.ico']
-        return [icon_link["href"]]
+    page = requests.get(domain)
+    soup = BeautifulSoup(page.text, 'html.parser')
+    icon_link = soup.find("link", rel="shortcut icon")
+    if icon_link is None:
+        icon_link = soup.find("link", rel="icon")
+    if icon_link is None:
+        return [domain + '/favicon.ico']
+    return [icon_link["href"]]
 
 
 def getFavicon(domain):
-    domain = validate_url(domain)
     favicons = getFavicon1(domain)
     page = requests.get(domain)
     soup = BeautifulSoup(page.text, 'html.parser')
@@ -403,8 +402,8 @@ def getFavicon(domain):
 
 class Fetch_images(Resource):
     def get(self):
-        baseUrl = request.args.get("URL")
-        baseUrl = validate_url(baseUrl)
+        baseUrl = validate_url(request.args.get("URL"))
+        print(baseUrl)
         if "youtube" in baseUrl:
             try:
                 links = youtube_killer(baseUrl)

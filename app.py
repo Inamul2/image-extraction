@@ -50,18 +50,30 @@ def get_favicons(check, driver):
     domain2 = f"https://{str(urlparse(check).netloc)}/favicon.ico"
 
     if validators.url(domain1) is True:
-        all_favicons.append(domain1)
+        if "https" not in domain1:
+            all_favicons.append("https" + domain1[4:])
+        else:
+            all_favicons.append(domain1)
     elif validators.url(domain2) is True:
-        all_favicons.append(domain2)
+        if "https" not in domain2:
+            all_favicons.append("https" + domain2[4:])
+        else:
+            all_favicons.append(domain2)
 
-    all_favicons.append(domain1)
+    if "https" not in domain1:
+        all_favicons.append("https" + domain1[4:])
+    else:
+        all_favicons.append(domain1)
 
     try:
         fav = driver.find_element(By.XPATH, '//link[@rel="shortcut icon"]')
 
         fav = fav.get_attribute("href")
 
-        all_favicons.append(fav)
+        if "https" not in fav:
+            all_favicons.append("https" + fav[4:])
+        else:
+            all_favicons.append(fav)
     except:
         pass
 
@@ -397,7 +409,18 @@ def getFavicon(domain):
     else:
         for fav in icon_link:
             favicons.append(fav["href"])
-    return favicons
+    links = []
+    for fav in favicons:
+        if domain in fav:
+            if "http" in fav and "https" not in fav:
+                fav = "https://" + fav[6:]
+                links.append({"Favicon": fav})
+        else:
+            k = domain + fav
+            if "http" in k and "https" not in k:
+                k = "https://" + k[6:]
+            links.append({"Favicon": k})
+    return links
 
 
 class Fetch_images(Resource):
@@ -435,10 +458,13 @@ class Fetch_images(Resource):
                     for fav in getFavicon(baseUrl):
                         if baseUrl in fav:
                             if "http" in fav and "https" not in fav:
-                                fav = "https://" + fav[:]
+                                fav = "https://" + fav[6:]
                                 links.append({"Favicon": fav})
                         else:
-                            links.append({"Favicon": baseUrl + fav})
+                            k = baseUrl + fav
+                            if "http" in k and "https" not in k:
+                                k = "https://" + k[6:]
+                            links.append({"Favicon": k})
 
                     response = {"Success": True, "Data Scraped": links, "Status Code": 200}
                 except:

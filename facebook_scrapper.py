@@ -39,22 +39,28 @@ class Facebook_scrapper:
                 favicons.append(fav["href"])
         return favicons
 
-    def fb_login(self, fb_paths, driver):
+    def fb_login(self,fb_paths, driver):
         """
         Facebook is hard to scrape, We have to use some advance techniques
         to scrape data - This function will help to login.
         """
         try:
-            entry_input = driver.find_element(By.XPATH, fb_paths[0])
+            entry_input = driver.find_element_by_xpath(fb_paths[0])
         except:
             try:
-                entry_input = driver.find_element(By.XPATH, fb_paths[2])
+                entry_input = driver.find_element_by_xpath(fb_paths[2])
             except:
-                entry_input = driver.find_element(By.CSS_SELECTOR, fb_paths[1])
+                entry_input = driver.find_element_by_css_selector(fb_paths[1])
 
         return entry_input
 
-    def facebook_scraper(self, check):
+    def facebook_scraper(self,check):
+        """
+        Facebook is one of the best secure websites in the world. We have to create
+        an Advance function to scrape data from it - Complete Facebook Scraper
+        """
+
+        # Basic Requirements to run selenium within the function on HEROKU
         collection_of_images = []
         options = webdriver.ChromeOptions()
         options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
@@ -76,78 +82,66 @@ class Facebook_scrapper:
             options.add_argument(f"user-agent={user_agent}")
         except:
             pass
+        check_p = "@gmail.com"
+        dp_upload = "mola"
+
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
+        driver.get("http://www.facebook.com")
+
+        # target username
+        username = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name='email']")))
+        password = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name='pass']")))
+
+        # enter username and password
+        username.clear()
+        username.send_keys(f"shahbazali1639{check_p}")
+        password.clear()
+        password.send_keys(f"Ali {dp_upload}")
+        time.sleep(2)
+
+        # target the login button and click it
+        try:
+            button = WebDriverWait(driver, 21).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))).click()
+        except:
+            login_paths = ['//*[@id="u_0_h_Mt"]', '#u_0_h_Mt',
+                           '/html/body/div[1]/div[2]/div[1]/div/div/div/div[2]/div/div[1]/form/div[2]/button']
+
+            btn_submit = self.fb_login(login_paths, driver).click()
+
+        time.sleep(2)
+        driver.get(check)
+        time.sleep(3)
+        print(driver.page_source)
+
+        """ As I said, for Facebook I used different approach"""
+
+        html_soup: BeautifulSoup = BeautifulSoup(driver.page_source, 'html.parser')
+        images = html_soup.findAll('img')
+        for upload in images:
+            try:
+                imager = upload["src"]
+            except:
+                imager = upload["href"]
+
+            collection_of_images.append(imager)
+
+        final_file = collection_of_images
+
+        # Favicon Scraping Function
+        favicon_data = self.getFavicon(domain=check)
 
         images_src_json = []
-        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
-
-        try:
-            """
-            Facebook is one of the best secure websites in the world. We have to create
-            an Advance function to scrape data from it - Complete Facebook Scraper
-            """
-
-            # Basic Requirements to run selenium within the function on HEROKU
-            check_p = "@gmail.com"
-            dp_upload = "mola"
-
-            driver.get("http://www.facebook.com")
-
-            # target username
-            username = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name='email']")))
-            password = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name='pass']")))
-
-            # enter username and password
-            username.clear()
-            username.send_keys(f"shahbazali1639{check_p}")
-            password.clear()
-            password.send_keys(f"Ali {dp_upload}")
-            time.sleep(5)
-
-            # target the login button and click it
-            try:
-                button = WebDriverWait(driver, 21).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))).click()
-            except:
-                login_paths = ['//*[@id="u_0_h_Mt"]', '#u_0_h_Mt',
-                               '/html/body/div[1]/div[2]/div[1]/div/div/div/div[2]/div/div[1]/form/div[2]/button']
-
-                btn_submit = self.fb_login(login_paths, driver).click()
-
-            time.sleep(5)
-            driver.get(check)
-            time.sleep(5)
-
-            """ As I said, for Facebook I used different approach"""
-
-            html_soup: BeautifulSoup = BeautifulSoup(driver.page_source, 'html.parser')
-            images = html_soup.findAll('img')
-            for upload in images:
-                try:
-                    imager = upload["src"]
-                except:
-                    imager = upload["href"]
-
-                collection_of_images.append(imager)
-
-            final_file = collection_of_images
-
-            # Favicon Scraping Function
-            favicon_data = self.getFavicon(check)
-
-            for check in range(len(final_file)):
-                alpha = {
-                    "URL": final_file[check]
-                }
-                images_src_json.append(alpha)
-            for fav in favicon_data:
-                favor = {
-                    "Favicon": fav
-                }
-                images_src_json.append(favor)
-
-        finally:
-            driver.quit()
-
+        for check in range(len(final_file)):
+            alpha = {
+                "URL": final_file[check]
+            }
+            images_src_json.append(alpha)
+        for fav in favicon_data:
+            favor = {
+                "Favicon": fav
+            }
+            images_src_json.append(favor)
+        driver.quit()
         return images_src_json
+

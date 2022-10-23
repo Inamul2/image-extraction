@@ -39,20 +39,20 @@ class Facebook_scrapper:
                 favicons.append(fav["href"])
         return favicons
 
-    def fb_login(self,fb_paths, driver):
-        """
-        Facebook is hard to scrape, We have to use some advance techniques
-        to scrape data - This function will help to login.
-        """
-        try:
-            entry_input = driver.find_element(By.XPATH,fb_paths[0])
-        except:
-            try:
-                entry_input = driver.find_element(By.XPATH,fb_paths[2])
-            except:
-                entry_input = driver.find_element(By.CSS_SELECTOR, fb_paths[1])
-
-        return entry_input
+    # def fb_login(self,fb_paths, driver):
+    #     """
+    #     Facebook is hard to scrape, We have to use some advance techniques
+    #     to scrape data - This function will help to login.
+    #     """
+    #     try:
+    #         entry_input = driver.find_element(By.XPATH,fb_paths[0])
+    #     except:
+    #         try:
+    #             entry_input = driver.find_element(By.XPATH,fb_paths[2])
+    #         except:
+    #             entry_input = driver.find_element(By.CSS_SELECTOR, fb_paths[1])
+    #
+    #     return entry_input
 
     def facebook_scraper(self,check):
         """
@@ -107,7 +107,7 @@ class Facebook_scrapper:
             login_paths = ['//*[@id="u_0_h_Mt"]', '#u_0_h_Mt',
                            '/html/body/div[1]/div[2]/div[1]/div/div/div/div[2]/div/div[1]/form/div[2]/button']
 
-            btn_submit = self.fb_login(login_paths, driver).click()
+            # btn_submit = self.fb_login(login_paths, driver).click()
 
         time.sleep(2)
         driver.get(check)

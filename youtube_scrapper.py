@@ -47,7 +47,7 @@ class Youtube_Scrapper:
         options.add_argument("--disable-gpu")
         options.add_argument("--start-maximized")
 
-        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=option)
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
         try:
             driver.implicitly_wait(5)
             collection_of_images = []

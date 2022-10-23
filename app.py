@@ -386,6 +386,7 @@ def getFavicon1(domain):
 
 
 def getFavicon(domain):
+    domain = validate_url(domain)
     favicons = getFavicon1(domain)
     page = requests.get(domain)
     soup = BeautifulSoup(page.text, 'html.parser')

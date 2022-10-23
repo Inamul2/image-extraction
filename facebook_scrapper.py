@@ -45,12 +45,12 @@ class Facebook_scrapper:
         to scrape data - This function will help to login.
         """
         try:
-            entry_input = driver.find_element_by_xpath(fb_paths[0])
+            entry_input = driver.find_element(By.XPATH,fb_paths[0])
         except:
             try:
-                entry_input = driver.find_element_by_xpath(fb_paths[2])
+                entry_input = driver.find_element(By.XPATH,fb_paths[2])
             except:
-                entry_input = driver.find_element_by_css_selector(fb_paths[1])
+                entry_input = driver.find_element(By.CSS_SELECTOR, fb_paths[1])
 
         return entry_input
 
